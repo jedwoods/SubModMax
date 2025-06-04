@@ -46,5 +46,5 @@ visualize_assignment_comparison(
     scenario,
     [dist_greedy, gen_dist_greedy, high_marginal], 
     assignment_titles=["Distributed Greedy", "Generalized Distributed Greedy (Self Sharing)", "Highest Marginal Contribution Sharing"],
-    figure_directory="examples/ex_out",
+    figure_directory="out",
 )

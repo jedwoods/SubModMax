@@ -1,5 +1,6 @@
 import tabulate
 import csv
+import os
 from scenario import Scenario
 from helpers import calc_stats
 
@@ -93,7 +94,10 @@ class ScenarioCollection:
             # Write to CSV
             fieldnames = ['Scenario', 'Strategy', 'Metric Type', 'min', 'max', 'median', 'mean', 'std_dev']
 
-            with open('stat_dict.csv', 'w', newline='') as f:
+            os.makedirs('out', exist_ok=True)
+            file_path = os.path.join('out', 'stat_dict.csv')
+
+            with open(file_path, 'w', newline='') as f:
                 writer = csv.DictWriter(f, fieldnames=fieldnames)
                 writer.writeheader()
                 writer.writerows(rows)
