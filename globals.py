@@ -1,0 +1,2 @@
+DEFAULT_FIG_DIR = "figures"
+DEFAULT_ARC = 0.3
