@@ -1,10 +1,10 @@
 # EXAMPLE - recreation of figure 1 from the Impact of Information in Distributed Submodular Maximization paper
 
 import networkx as nx
-from scenario import Scenario
-from algorithms import distributed_greedy, limited_information_greedy_with_sharing_rule
-from informationSharing import generalized_distributed_greedy_rule, highest_marginal_contribution_rule
-from visualize import visualize_assignment_comparison
+from submodmax.objects.scenario import Scenario
+from submodmax.algorithms import distributed_greedy, greedy_with_information_sharing_rule
+from submodmax.information_sharing_rules import generalized_distributed_greedy_rule, highest_marginal_contribution_rule
+from submodmax.visualize import visualize_assignment_comparison
 
 G = nx.DiGraph()
 G.add_edges_from([(1, 3), (1, 4), (2, 3)])
@@ -27,8 +27,8 @@ action_sets = {
 scenario = Scenario(G, action_sets, target_values, type="figure1")
 
 dist_greedy = distributed_greedy(scenario)
-gen_dist_greedy = limited_information_greedy_with_sharing_rule(scenario, generalized_distributed_greedy_rule)
-high_marginal = limited_information_greedy_with_sharing_rule(scenario, highest_marginal_contribution_rule)
+gen_dist_greedy = greedy_with_information_sharing_rule(scenario, generalized_distributed_greedy_rule)
+high_marginal = greedy_with_information_sharing_rule(scenario, highest_marginal_contribution_rule)
 
 visualize_assignment_comparison(
     scenario, 

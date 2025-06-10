@@ -1,2 +1,0 @@
-DEFAULT_FIG_DIR = "out"
-DEFAULT_ARC = 0.3

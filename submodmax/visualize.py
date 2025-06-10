@@ -2,10 +2,11 @@ import os
 import matplotlib.pyplot as plt
 import networkx as nx
 import tabulate
-from scenario import Scenario
-from assignment import Assignment
-from helpers import score_assignment, get_best_scenarios, get_worst_scenarios
-from globals import DEFAULT_FIG_DIR, DEFAULT_ARC
+from submodmax.objects.scenario import Scenario
+from submodmax.objects.assignment import Assignment
+from submodmax.utils.scenario_utils import get_best_scenarios, get_worst_scenarios
+from submodmax.utils.assignment_utils import score_assignment
+from submodmax.globals import DEFAULT_OUT_DIR, DEFAULT_ARC
 
 def visualize_scenario(
         scenario: Scenario,
@@ -145,7 +146,7 @@ def visualize_best_worst_scenarios(
         scenarios: list[Scenario],
         algorithm: str,
         visual_title: str,
-        figure_directory: str = DEFAULT_FIG_DIR,
+        figure_directory: str = DEFAULT_OUT_DIR,
         arc_rads_scale: float = DEFAULT_ARC
 ) -> None:
     """

@@ -1,10 +1,9 @@
 from typing import Callable, Any
-from scenario import Scenario
-from assignment import Assignment
-from helpers import score_assignment
-
+from submodmax.objects.scenario import Scenario
+from submodmax.objects.assignment import Assignment
+from submodmax.utils.assignment_utils import score_assignment
 UNKNOWN = 0
-
+ 
 def distributed_greedy(scenario: Scenario) -> Assignment:
     """
     Returns an assignment of agents to targets for the provided scenario detemined by the distributed
@@ -36,7 +35,7 @@ def distributed_greedy(scenario: Scenario) -> Assignment:
         functional_target_values[best_option] = 0
     return Assignment(assignment, assignment_val)
 
-def limited_information_greedy_with_sharing_rule(
+def greedy_with_information_sharing_rule(
         scenario: Scenario,
         rule: Callable[[Any, dict[int, int], dict[int, int], int], tuple[int, int]]
 ) -> Assignment:

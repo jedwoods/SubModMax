@@ -1,6 +1,7 @@
 import networkx as nx
 import itertools
-from assignment import Assignment
+from submodmax.objects.assignment import Assignment
+from submodmax.utils.assignment_utils import score_assignment
 
 class Scenario:
     def __init__(
@@ -38,7 +39,6 @@ class Scenario:
             Assignment(dict(zip(keys, values))) for values in itertools.product(*self.action_sets.values())
         ]
 
-        from helpers import score_assignment
         for assignment in possibilities:
             sol_val = score_assignment(assignment, self.target_values)
             if sol_val > basf_val:

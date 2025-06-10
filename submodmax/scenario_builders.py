@@ -1,9 +1,9 @@
 import networkx as nx
 import random
-from scenario import Scenario
-from actionTargetGenerators import default_target_generator
-from visualize import visualize_scenario
 from typing import Callable
+from submodmax.objects.scenario import Scenario
+from submodmax.action_target_generators import default_target_generator
+from submodmax.visualize import visualize_scenario
 
 def generate_line_graph(
     agent_count: int, 

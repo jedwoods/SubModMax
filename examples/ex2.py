@@ -1,10 +1,10 @@
 # EXAMPLE - a larger graph
 
 import networkx as nx
-from algorithms import distributed_greedy, limited_information_greedy_with_sharing_rule
-from informationSharing import generalized_distributed_greedy_rule, highest_marginal_contribution_rule
-from scenario import Scenario
-from visualize import visualize_assignment_comparison
+from submodmax.algorithms import distributed_greedy, greedy_with_information_sharing_rule
+from submodmax.information_sharing_rules import generalized_distributed_greedy_rule, highest_marginal_contribution_rule
+from submodmax.objects.scenario import Scenario
+from submodmax.visualize import visualize_assignment_comparison
 
 G = nx.DiGraph()
 G.add_edges_from([(1, 3), (1, 4), (1,10), (2, 3), (2, 4), (3, 7), (3, 9), (4, 5), (5, 6), (5, 7), (6, 9), (6, 10), (7, 8), (8, 9), (8, 10), (9, 10)])
@@ -39,8 +39,8 @@ action_sets = {
 scenario = Scenario(G, action_sets, target_values)
 
 dist_greedy = distributed_greedy(scenario)
-gen_dist_greedy = limited_information_greedy_with_sharing_rule(scenario, generalized_distributed_greedy_rule)
-high_marginal = limited_information_greedy_with_sharing_rule(scenario, highest_marginal_contribution_rule)
+gen_dist_greedy = greedy_with_information_sharing_rule(scenario, generalized_distributed_greedy_rule)
+high_marginal = greedy_with_information_sharing_rule(scenario, highest_marginal_contribution_rule)
 
 visualize_assignment_comparison(
     scenario,

@@ -1,0 +1,2 @@
+DEFAULT_OUT_DIR = "out"
+DEFAULT_ARC = 0.3
