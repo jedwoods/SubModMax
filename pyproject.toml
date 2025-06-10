@@ -1,0 +1,16 @@
+[project]
+name = "submodmax"
+version = "0.1.0"
+description = "Simulations and experiments for submodular maximization with limited information"
+readme = "README.md"
+requires-python = ">=3.8"
+
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+packages = ["submodmax"]
+
+[tool.setuptools.package-dir]
+"" = "."
