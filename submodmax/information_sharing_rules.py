@@ -34,7 +34,7 @@ def highest_marginal_contribution_rule(
     current_agent: int
 ) -> tuple[int, int]:
     """
-    An information sharing rule that returns the (agent, decision) pair that produces the largest marginal contribution to
+    An information sharing rule that returns the (agent, choice of target) pair that produces the largest marginal contribution to
     the overall score of an assignment, restricted to the knowledge of the current agent.
 
     Args:
@@ -57,6 +57,7 @@ def highest_marginal_contribution_rule(
         if choice != UNKNOWN and target_values[choice] > agent_choice_contribution:
             agent_to_pass = agent
             agent_choice = choice
+            agent_choice_contribution = target_values[choice]
     return agent_to_pass, agent_choice
 
 
@@ -397,3 +398,23 @@ def reach_and_value_rule(
             best_decision = (agent, target)
 
     return best_decision if best_decision != (-1, -1) else known_decisions[0]
+
+def adaptive_sharing_rule(
+    G: nx.DiGraph,
+    knowledge: dict[int, int],
+    target_values: dict[int, int],
+    current_agent: int
+) -> tuple[int, int]:
+    num_known = sum(1 for t in knowledge.values() if t != 0)
+    num_agents = G.number_of_nodes()
+    progress = num_known / num_agents
+
+    if progress < 0.3:
+        # Early: propagate high-value or high-centrality agents
+        return degree_centrality_rule(G, knowledge, target_values, current_agent)
+    elif progress < 0.7:
+        # Mid: strategic spreading to maximize novelty or reach
+        return least_likely_known_amongst_neighborhood_rule(G, knowledge, target_values, current_agent)
+    else:
+        # Late: fallback to marginal contribution or greedy coverage
+        return highest_marginal_contribution_rule(G, knowledge, target_values, current_agent)
