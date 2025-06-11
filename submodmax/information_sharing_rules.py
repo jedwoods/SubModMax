@@ -321,9 +321,6 @@ def maximize_downstream_reach(
     An information sharing rule that returns the (agent, choice of target) pair amongst the current agent's knowledge that maximizes the downstream 
     reach of the source agent.
 
-    Chooses a (agent, target) decision to share with neighbors,
-    based on maximizing downstream reach of the source agent.
-
     Args:
         G (nx.Digraph): The directed graph representing which agents share information with which other agents.
         knowledge (dict[int, int]): A dictionary representing the current agent's knowledge of the decisions made
