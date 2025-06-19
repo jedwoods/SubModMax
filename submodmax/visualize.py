@@ -13,9 +13,19 @@ def visualize_scenario(
         title: str = "Visual",
         assignment: Assignment = None,
         metric: str = "score",
-        metric_value: float = None, 
+        metric_value: str | int | float = None,
+        show_metric_value: bool = True,
+        agent_labels: dict[int, str] = None,
+        target_labels: dict[int, str] = None,
+        agent_label_size: int = 12,
+        target_label_size: int = 12,
+        text_color: str = "black",
+        normal_edge_color: str = "gray",
+        highlight_edge_color: str = "red",
+        show_title: bool = True,
         ax: plt.Axes = None,
         arc_rads_scale: float = DEFAULT_ARC,
+        transparent: bool = False,
         figure_directory: str = None
 ) -> None:
     """
@@ -38,7 +48,7 @@ def visualize_scenario(
     target_values = scenario.get_target_values()
 
     if ax is None:
-        fig, ax = plt.subplots()
+        fig, ax = plt.subplots(figsize=(6, 4))
     
     # Agent positioning
     agent_count = len(G)
@@ -59,45 +69,57 @@ def visualize_scenario(
     nx.draw_networkx_nodes(G, pos, nodelist=range(1, agent_count + 1), ax=ax, node_color='lightblue', node_size=node_size)
     straight_edges = [(u, v) for u, v in G.edges() if abs(u - v) == 1]
     curved_edges = [(u, v) for u, v in G.edges() if abs(u - v) > 1]
-    nx.draw_networkx_edges(G, pos, edgelist=straight_edges, ax=ax, edge_color='gray', arrows=True, arrowstyle='->', node_size=node_size)
-    nx.draw_networkx_edges(G, pos, edgelist=curved_edges, ax=ax, connectionstyle=f'arc3,rad={-rad}', edge_color='gray', arrows=True, arrowstyle='->', node_size=node_size)
+    nx.draw_networkx_edges(G, pos, edgelist=straight_edges, ax=ax, edge_color=normal_edge_color, arrows=True, arrowstyle='->', node_size=node_size)
+    nx.draw_networkx_edges(G, pos, edgelist=curved_edges, ax=ax, connectionstyle=f'arc3,rad={-rad}', edge_color=normal_edge_color, arrows=True, arrowstyle='->', node_size=node_size)
 
     # Draw targets and action sets
     nx.draw_networkx_nodes(G, pos, nodelist=pseudo_targets.values(), ax=ax, node_color='gold', node_size=node_size)
     action_set_edges = [(u, v + agent_count) for u, action_set in action_sets.items() for v in action_set]
-    nx.draw_networkx_edges(G, pos, edgelist=action_set_edges, ax=ax, edge_color='gray', arrows=True, arrowstyle='->', node_size=node_size)
+    nx.draw_networkx_edges(G, pos, edgelist=action_set_edges, ax=ax, edge_color=normal_edge_color, arrows=True, arrowstyle='->', node_size=node_size)
 
     # Draw in assignment (if applicable)
     if assignment:
-        assignment_edges = [(agent, pseudo_targets[target]) for agent, target in assignment.assignment.items()]
-        nx.draw_networkx_edges(G, pos, edgelist=assignment_edges, ax=ax, edge_color='red', arrows=True, arrowstyle='->', node_size=node_size)
+        assignment_edges = []
+        for agent, target in assignment.get_assignment_pairs():
+            if target:
+                assignment_edges.append((agent, pseudo_targets[target]))
+        nx.draw_networkx_edges(G, pos, edgelist=assignment_edges, ax=ax, edge_color=highlight_edge_color, arrows=True, arrowstyle='->', node_size=node_size)
 
     # Agent and target labeling
-    agent_labels = {agent : agent for agent in range(1, agent_count + 1)}
-    target_labels = dict(zip(pseudo_targets.values(), target_values.values()))
-    labels = {**agent_labels, **target_labels}
-    nx.draw_networkx_labels(G, pos, ax=ax, labels=labels)
-
+    if agent_labels is None:
+        agent_labels = {agent : agent for agent in range(1, agent_count + 1)}
+    if target_labels is None:
+        target_labels = dict(zip(pseudo_targets.values(), target_values.values()))
+    else:
+        target_labels = {pseudo_targets[target]: target_labels[target] for target in target_labels}
+    nx.draw_networkx_labels(G, pos, ax=ax, labels=agent_labels, font_size=agent_label_size)
+    nx.draw_networkx_labels(G, pos, ax=ax, labels=target_labels, font_size=target_label_size)
+    
     # Target identification
     for real_target, pseudo_target in pseudo_targets.items():
         x, y = pos[pseudo_target]
-        ax.text(x, y - 0.08, rf"$t_{{{real_target}}}$", fontsize=10, ha='center', va='top')
+        ax.text(x, y - 0.08, rf"$t_{{{real_target}}}$", fontsize=10, ha='center', va='top', color=text_color)
 
     # Customize title
-    if assignment and metric_value:
-        if metric == "score":
-            mod_title = rf"{title} - $f(x) = {metric_value}$"
-        if metric == "efficiency":
-            mod_title = rf"{title} - $\gamma(x) = {metric_value}$"
-        
-    ax.set_title(mod_title, pad=20)
+    if show_title:
+        mod_title = title
+        if assignment and show_metric_value:
+            if metric == "score":
+                mod_title = rf"{title} - $f(x) = {metric_value}$"
+            if metric == "efficiency":
+                mod_title = rf"{title} - $\gamma(x) = {metric_value}$"
+            
+        ax.set_title(mod_title, pad=20, color=text_color)
+    
     ax.set_ylim(-0.6, 0.4)
     ax.axis('off')
+    plt.tight_layout()
 
     if figure_directory:
         os.makedirs(figure_directory, exist_ok=True)
         save_path = os.path.join(figure_directory, f"{title.replace(' ','')}.png")
-        plt.savefig(save_path)
+        plt.savefig(save_path, transparent=transparent)
+        #print(f"Visualization saved to [{save_path}]")
         plt.close()
 
 def visualize_assignment_comparison(

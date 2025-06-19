@@ -1,6 +1,6 @@
 from submodmax.objects.assignment import Assignment
 
-def score_assignment(assignment: Assignment, target_values: dict[int, int]) -> int:
+def score_assignment(assignment: Assignment, target_values: dict[int, int]) -> float:
     """
     Return the score of an assignment of agents to targets.
 
@@ -14,5 +14,6 @@ def score_assignment(assignment: Assignment, target_values: dict[int, int]) -> i
     score = 0
     unique_choices = set(assignment.get_choices())
     for choice in unique_choices:
-        score += target_values[choice]
+        if choice:
+            score += target_values[choice]
     return score

@@ -32,11 +32,12 @@ class Scenario:
         """
         
         basf = None
-        basf_val = 0
+        basf_val = -1
         # Generate all possible assignments
         keys = list(self.action_sets.keys())
+        action_sets = [s[:] if s else [None] for s in self.action_sets.values()]
         possibilities = [
-            Assignment(dict(zip(keys, values))) for values in itertools.product(*self.action_sets.values())
+            Assignment(dict(zip(keys, values))) for values in itertools.product(*action_sets)
         ]
 
         for assignment in possibilities:
@@ -45,8 +46,10 @@ class Scenario:
                 basf = assignment
                 basf_val = sol_val
         
-        self.optimal_assignment = basf
-        self.optimal_assignment.set_value(basf_val)
+        if basf:
+            self.optimal_assignment = basf
+            self.optimal_assignment.set_value(basf_val)
+            self.optimal_assignment.set_efficiency(1.0)
     
     def add_assignment(self, algorithm_title: str, assignment: Assignment):
         if self.optimal_assignment:
@@ -61,6 +64,7 @@ class Scenario:
     def get_assignment_by_algorithm(self, algorithm_title: str) -> Assignment: return self.assignments.get(algorithm_title, None)
     def get_optimal_assignment(self) -> Assignment: return self.optimal_assignment
     def get_optimal_value(self) -> int: return self.optimal_assignment.get_value()
+        
     
     def __str__(self):
         nbr = self.nbr if self.nbr is not None else "?"

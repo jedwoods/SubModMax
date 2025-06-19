@@ -1,6 +1,10 @@
 # PROJECT SPECIFIC
 out/
 
+# Other
+.DS_Store
+**/figures
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

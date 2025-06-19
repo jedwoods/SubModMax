@@ -28,8 +28,8 @@ def generalized_distributed_greedy_rule(
     return current_agent, knowledge[current_agent]
 
 def highest_marginal_contribution_rule(
-    G: nx.DiGraph, knowledge: 
-    dict[int, int], 
+    G: nx.DiGraph, 
+    knowledge: dict[int, int], 
     target_values: dict[int, int], 
     current_agent: int
 ) -> tuple[int, int]:
@@ -52,9 +52,9 @@ def highest_marginal_contribution_rule(
     """
     agent_to_pass = current_agent
     agent_choice = knowledge[current_agent]
-    agent_choice_contribution = target_values[agent_choice]
+    agent_choice_contribution = target_values[agent_choice] if agent_choice else 0.0
     for agent, choice in knowledge.items():
-        if choice != UNKNOWN and target_values[choice] > agent_choice_contribution:
+        if choice != UNKNOWN and choice != None and target_values[choice] > agent_choice_contribution:
             agent_to_pass = agent
             agent_choice = choice
             agent_choice_contribution = target_values[choice]
@@ -93,7 +93,7 @@ def most_upstream_agent_rule(
     # If multiple agents have the same smallest index, pick the one with the highest target value
     best_choice = knowledge[upstream_agent]
     for a in known_agents:
-        if a == upstream_agent and target_values[knowledge[a]] > target_values[best_choice]:
+        if a == upstream_agent and knowledge[a] and target_values[knowledge[a]] > target_values[best_choice]:
             best_choice = knowledge[a]
     return upstream_agent, best_choice
 
@@ -127,7 +127,7 @@ def least_likely_known_amongst_neighborhood_rule(
     max_novelty = -1
     best_agent = current_agent
     best_choice = knowledge[current_agent]
-    best_value = target_values[best_choice] if best_choice != UNKNOWN else -1
+    best_value = target_values[best_choice] if best_choice else 0
 
     for a in known_agents:
         novelty = 0
@@ -136,11 +136,11 @@ def least_likely_known_amongst_neighborhood_rule(
             if a not in G.predecessors(neighbor):
                 novelty += 1
         # Prefer higher target value in case of tie
-        if novelty > max_novelty or (novelty == max_novelty and target_values[knowledge[a]] > best_value):
+        if novelty > max_novelty or (novelty == max_novelty and knowledge[a] and target_values[knowledge[a]] > best_value):
             max_novelty = novelty
             best_agent = a
             best_choice = knowledge[a]
-            best_value = target_values[best_choice]
+            best_value = target_values[best_choice] if best_choice else 0
     return best_agent, best_choice
 
 def random_known_agent_rule(
@@ -206,11 +206,11 @@ def degree_centrality_rule(
     best_agent = known_agents[0]
     best_choice = knowledge[best_agent]
     best_centrality = centrality[best_agent]
-    best_value = target_values[best_choice]
+    best_value = target_values[best_choice] if best_choice else 0
 
     for a in known_agents:
         c = centrality[a]
-        v = target_values[knowledge[a]]
+        v = target_values[knowledge[a]] if knowledge[a] else 0
         if c > best_centrality or (c == best_centrality and v > best_value):
             best_agent = a
             best_choice = knowledge[a]
@@ -252,11 +252,11 @@ def betweenness_centrality_rule(
     best_agent = known_agents[0]
     best_choice = knowledge[best_agent]
     best_centrality = centrality[best_agent]
-    best_value = target_values[best_choice]
+    best_value = target_values[best_choice] if best_choice else 0
 
     for a in known_agents:
         c = centrality[a]
-        v = target_values[knowledge[a]]
+        v = target_values[knowledge[a]] if knowledge[a] else 0
         if c > best_centrality or (c == best_centrality and v > best_value):
             best_agent = a
             best_choice = knowledge[a]
@@ -298,11 +298,11 @@ def closeness_centrality_rule(
     best_agent = known_agents[0]
     best_choice = knowledge[best_agent]
     best_centrality = centrality[best_agent]
-    best_value = target_values[best_choice]
+    best_value = target_values[best_choice] if best_choice else 0
 
     for a in known_agents:
         c = centrality[a]
-        v = target_values[knowledge[a]]
+        v = target_values[knowledge[a]] if knowledge[a] else 0
         if c > best_centrality or (c == best_centrality and v > best_value):
             best_agent = a
             best_choice = knowledge[a]

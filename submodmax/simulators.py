@@ -64,11 +64,14 @@ def algorithms_versus_scenarios(
         print_stats(e_dict, 'mean', f)
         
         if create_visuals:
-            fig_dir = os.path.join(out_directory, "figures")
-            print(f"\nCreating visualizations in [{fig_dir}]...", end="")
-            for stype in sc.get_stypes():
-                scenarios = sc.get_scenarios_by_stype(stype).values()
-                for alg_title in algorithm_titles:
-                    visualize_best_worst_scenarios(scenarios, alg_title, f"{alg_title} on {stype}", figure_directory=fig_dir, arc_rads_scale=0.3)
-            print(f"  done!\n")
+            if runs_per_scenario >= 10:
+                fig_dir = os.path.join(out_directory, "figures")
+                print(f"\nCreating visualizations in [{fig_dir}]...", end="")
+                for stype in sc.get_stypes():
+                    scenarios = sc.get_scenarios_by_stype(stype).values()
+                    for alg_title in algorithm_titles:
+                        visualize_best_worst_scenarios(scenarios, alg_title, f"{alg_title} on {stype}", figure_directory=fig_dir, arc_rads_scale=0.3)
+                print(f"  done!\n")
+            else:
+                print(f"Cannot generate best worst comparison because there are less than 10 runs per scenario!")
     return sc

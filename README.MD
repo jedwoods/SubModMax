@@ -1,5 +1,5 @@
 ### Installation
-After cloning, use `pip install -e` to install in editable mode. Scripts can then be called as expected (for example: `python3 examples/ex1.py`).
+After cloning, use `pip install -e .` to install in editable mode. Scripts can then be called as expected (for example: `python3 examples/ex1.py`).
 
 ### The Problem
 The purpose of this Python codebase is to explore the efficiency impact of restricted information sharing in greedy solutions to submodular maximization problems. To do this, the functions and algorithms contained here consider scenarios involving decision making agents that each select targets of differing values.
