@@ -30,9 +30,9 @@ def generate_line_graph(
     G = nx.DiGraph()
     G.add_edges_from([(u, u + 1) for u in range(1, agent_count)])
     action_sets, target_values = target_generator(agent_count, target_count)
-    S = Scenario(G, action_sets, target_values, type="line")
-    if view: visualize_scenario(S, "Scenario Visualization")
-    return S
+    s = Scenario(G, action_sets, target_values)
+    if view: visualize_scenario(s, "Scenario Visualization")
+    return s
 
 def generate_random_linearized_dag(
     agent_count: int,
@@ -68,9 +68,9 @@ def generate_random_linearized_dag(
     chosen_edges = random.sample(possible_edges, edge_count)
     G.add_edges_from(chosen_edges)
     action_sets, target_values = target_generator(agent_count, target_count)
-    S = Scenario(G, action_sets, target_values, type="linearized_dag")
-    if view: visualize_scenario(S, "Scenario Visualization")
-    return S
+    s = Scenario(G, action_sets, target_values)
+    if view: visualize_scenario(s, "Scenario Visualization")
+    return s
 
 def pass_to_last(
     agent_count: int,
@@ -96,9 +96,9 @@ def pass_to_last(
     G = nx.DiGraph()
     G.add_edges_from([(u, agent_count) for u in range(1, agent_count)])
     action_sets, target_values = target_generator(agent_count, target_count)
-    S = Scenario(G, action_sets, target_values, type="pass_to_last")
-    if view: visualize_scenario(S, "Scenario Visualization")
-    return S
+    s = Scenario(G, action_sets, target_values)
+    if view: visualize_scenario(s, "Scenario Visualization")
+    return s
 
 def pair_agents(
     agent_count: int,
@@ -124,6 +124,6 @@ def pair_agents(
     G.add_nodes_from(range(1, agent_count + 1))
     G.add_edges_from([(u, u + 1) for u in range(1, agent_count, 2)])
     action_sets, target_values = target_generator(agent_count, target_count)
-    S = Scenario(G, action_sets, target_values, type="pair_agents")
-    if view: visualize_scenario(S, "Scenario Visualization")
-    return S
+    s = Scenario(G, action_sets, target_values)
+    if view: visualize_scenario(s, "Scenario Visualization")
+    return s

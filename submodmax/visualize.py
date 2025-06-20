@@ -165,62 +165,51 @@ def visualize_assignment_comparison(
         print(f"\nVisualizations saved to {figure_directory}\n")
 
 def visualize_best_worst_scenarios(
-        scenarios: list[Scenario],
-        algorithm: str,
-        visual_title: str,
-        figure_directory: str = DEFAULT_OUT_DIR,
+        best: list[tuple[Scenario, Assignment]], 
+        worst: list[tuple[Scenario, Assignment]],
+        scenario_type: str,
+        algorithm_title: str,
+        output_dir: str,
         arc_rads_scale: float = DEFAULT_ARC
 ) -> None:
     """
     A visualization function to be used in conjunction with a simulation. Visualizes the five best and five worst scenarios
     for a given algorithm.
-
-    Args:
-        scenarios (list[Scenario]): A list of scenarios to be considered.
-        algorithm (str): The algorithm being considered for the set of scenarios.
-        visual_title (str): The title for the visualization.
-        figure_directory (str): The directory where the figures will be saved.
-        arc_rads_scale (float): A scalar factor that determines how much the edges between non-adjacent
-            agents should be arced.
     """
     best_titles = ["Best", "2nd Best", "3rd Best", "4th Best", "5th Best"]
     worst_titles = ["Worst", "2nd Worst", "3rd Worst", "4th Worst", "5th Worst"]
 
-    best_scenarios = get_best_scenarios(scenarios, algorithm, n=5)
-    worst_scenarios = get_worst_scenarios(scenarios, algorithm, n=5)
-
     fig, axes = plt.subplots(2, 5, figsize=(20, 10))
     for index in range(5):
-        S = best_scenarios[index]
-        assignment = S.get_assignment_by_algorithm(algorithm)
-        efficiency = assignment.get_efficiency()
+        s, a = best[index]
+        efficiency = a.get_efficiency()
         visualize_scenario(
-            scenario=best_scenarios[index], 
-            title=best_titles[index] + f"\nScenario {S.nbr}", 
-            assignment=assignment,
+            scenario=s, 
+            title=best_titles[index] + f"\nScenario {s.get_nbr()}", 
+            assignment=a,
             metric="efficiency",
-            metric_value=efficiency,
+            metric_value=round(efficiency, 3),
             ax=axes[0][index],
             arc_rads_scale=arc_rads_scale
         )
-        S = worst_scenarios[index]
-        assignment = S.get_assignment_by_algorithm(algorithm)
-        efficiency = assignment.get_efficiency()
+        s, a = worst[index]
+        efficiency = a.get_efficiency()
         visualize_scenario(
-            scenario=worst_scenarios[index], 
-            title=worst_titles[index] + f"\nScenario {S.nbr}", 
-            assignment=assignment,
+            scenario=s, 
+            title=worst_titles[index] + f"\nScenario {s.get_nbr()}", 
+            assignment=a,
             metric="efficiency",
-            metric_value=efficiency,
+            metric_value=round(efficiency, 3),
             ax=axes[1][index],
             arc_rads_scale=arc_rads_scale
         )
     
+    visual_title = f"{algorithm_title} on {scenario_type}"
     fig.suptitle(visual_title)
     fig.tight_layout()
 
-    os.makedirs(figure_directory, exist_ok=True)
-    save_path = os.path.join(figure_directory, f"bw_{visual_title.replace(' ','')}.png")
+    os.makedirs(output_dir, exist_ok=True)
+    save_path = os.path.join(output_dir, f"bw_{visual_title.replace(' ','')}.png")
     plt.savefig(save_path)
     plt.close()
         
