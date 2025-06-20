@@ -415,3 +415,17 @@ def adaptive_sharing_rule(
     else:
         # Late: fallback to marginal contribution or greedy coverage
         return highest_marginal_contribution_rule(G, knowledge, target_values, current_agent)
+
+RULE_NAMES = {
+    generalized_distributed_greedy_rule: "Generalized Distributed",
+    highest_marginal_contribution_rule: "Highest Marginal Contribution",
+    most_upstream_agent_rule: "Most Upstream Agent",
+    least_likely_known_amongst_neighborhood_rule: "Least Likely Known",
+    random_known_agent_rule: "Random",
+    degree_centrality_rule: "Degree Centrality",
+    betweenness_centrality_rule: "Betweenness Centrality",
+    closeness_centrality_rule: "Closeness Centrality",
+    maximize_downstream_reach: "Maximize Downstream Reach",
+    reach_and_value_rule: "Reach and Value",
+    adaptive_sharing_rule: "Adaptive Sharing"
+}

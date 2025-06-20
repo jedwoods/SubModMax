@@ -2,6 +2,8 @@ from typing import Callable, Any
 from submodmax.objects.scenario import Scenario
 from submodmax.objects.assignment import Assignment
 from submodmax.utils.assignment_utils import score_assignment
+from submodmax.information_sharing_rules import RULE_NAMES
+
 UNKNOWN = 0
  
 def distributed_greedy(scenario: Scenario) -> Assignment:
@@ -20,8 +22,9 @@ def distributed_greedy(scenario: Scenario) -> Assignment:
 
     functional_target_values = target_values.copy()
     agent_count = len(action_sets)
-    assignment = {}
+    choices = {}
     assignment_val = 0
+    optimal_val = scenario.get_optimal_value()
 
     for agent in range(1, agent_count + 1):
         best_option = None
@@ -30,10 +33,12 @@ def distributed_greedy(scenario: Scenario) -> Assignment:
             if functional_target_values[option] > bo_val:
                 best_option = option
                 bo_val = functional_target_values[option]
-        assignment[agent] = best_option
+        choices[agent] = best_option
         assignment_val += bo_val
         functional_target_values[best_option] = 0
-    return Assignment(assignment, assignment_val)
+    
+    eff = assignment_val / optimal_val if optimal_val != 0 else 1.0
+    return Assignment(choices, assignment_val, eff, "Distributed Greedy", None)
 
 def greedy_with_information_sharing_rule(
         scenario: Scenario,
@@ -58,7 +63,7 @@ def greedy_with_information_sharing_rule(
 
     agent_count = len(G)
     knowledge_dict = {agent: {a: UNKNOWN for a in range(1, agent_count + 1)} for agent in range(1, agent_count + 1)}
-    assignment = {}
+    choices = {}
     for agent in range(1, agent_count + 1):
         # Greedy selection based on limited information available to agent
         best_option = action_sets[agent][0] if action_sets[agent] else None
@@ -67,7 +72,7 @@ def greedy_with_information_sharing_rule(
             if target_option not in knowledge_dict[agent].values() and target_values[target_option] > bo_val: 
                 best_option = target_option
                 bo_val = target_values[target_option]
-        assignment[agent] = best_option
+        choices[agent] = best_option
         knowledge_dict[agent][agent] = best_option
         
         # Pass information based on rule
@@ -75,12 +80,9 @@ def greedy_with_information_sharing_rule(
         for neighbor in G.successors(agent):
             knowledge_dict[neighbor][agent_passed] = agent_passed_choice
     
-    assignment = Assignment(assignment)
+    assignment = Assignment(choices, algorithm_used="Greedy with Info Sharing")
     score = score_assignment(assignment, target_values)
-    if optimal_value == 0:
-        eff = 1.0
-    else:
-        eff = score / optimal_value
     assignment.set_value(score)
-    assignment.set_efficiency(eff)
+    assignment.set_efficiency(score / optimal_value if optimal_value != 0 else 1.0)
+    assignment.set_rule_used(RULE_NAMES[rule])
     return assignment

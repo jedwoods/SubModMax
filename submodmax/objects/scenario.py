@@ -9,31 +9,22 @@ class Scenario:
         G: nx.DiGraph, 
         action_sets: dict[int, list[int]], 
         target_values: dict[int, int],
-        nbr: int = None, 
-        type: str = None
+        nbr: int = None
     ):
         self.G = G
         self.action_sets = action_sets
         self.target_values = target_values
         self.nbr = nbr
-        self.type = type
-        self.assignments = {}
-        self.brute_force_optimal_solution()
+        self.optimal_assignment = self.brute_force_optimal_solution()
+        self.optimal_value = self.optimal_assignment.get_value() if self.optimal_assignment != None else None
 
-    def assign_number(self, nbr: int):
-        self.nbr = nbr
-
-    def assign_type(self, type: str):
-        self.type = type
-
-    def brute_force_optimal_solution(self):
+    def brute_force_optimal_solution(self) -> Assignment:
         """
         Computes the optimal assignment of agents to targets by generating all possible assignments and scoring them.
         """
         
         basf = None
         basf_val = -1
-        # Generate all possible assignments
         keys = list(self.action_sets.keys())
         action_sets = [s[:] if s else [None] for s in self.action_sets.values()]
         possibilities = [
@@ -46,30 +37,17 @@ class Scenario:
                 basf = assignment
                 basf_val = sol_val
         
-        if basf:
-            self.optimal_assignment = basf
-            self.optimal_assignment.set_value(basf_val)
-            self.optimal_assignment.set_efficiency(1.0)
-    
-    def add_assignment(self, algorithm_title: str, assignment: Assignment):
-        if self.optimal_assignment:
-            assignment.set_efficiency(round(assignment.get_value() / self.optimal_assignment.get_value(), 3))
-        self.assignments[algorithm_title] = assignment
+        optimal_assignment = basf
+        optimal_assignment.set_value(basf_val)
+        optimal_assignment.set_efficiency(1.0)
+        return optimal_assignment
+
+    def assign_number(self, nbr: int):
+        self.nbr = nbr
 
     def get_graph_copy(self) -> nx.DiGraph: return self.G.copy()
     def get_action_set(self) -> dict[int, list[int]]: return self.action_sets
     def get_target_values(self) -> dict[int, int]: return self.target_values
     def get_nbr(self) -> int: return self.nbr
-    def get_type(self) -> float: return self.type
-    def get_assignment_by_algorithm(self, algorithm_title: str) -> Assignment: return self.assignments.get(algorithm_title, None)
     def get_optimal_assignment(self) -> Assignment: return self.optimal_assignment
     def get_optimal_value(self) -> int: return self.optimal_assignment.get_value()
-        
-    
-    def __str__(self):
-        nbr = self.nbr if self.nbr is not None else "?"
-        type = self.type if self.type is not None else "?"
-        return f"S{nbr} {type}"
-    
-    def __repr__(self):
-        return str(self)

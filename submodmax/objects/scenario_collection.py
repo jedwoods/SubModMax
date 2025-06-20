@@ -50,9 +50,3 @@ class ScenarioCollection:
         self.stored_value_stats = value_stats
         self.stored_efficiency_stats = efficiency_stats
         return value_stats, efficiency_stats
-        
-    def __str__(self):
-        return f"ScenarioCollection with {len(self.stypes)} scenario type(s)."
-    
-    def __repr__(self):
-        return str(self)

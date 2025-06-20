@@ -1,5 +1,5 @@
 from submodmax.simulators import algorithms_versus_scenarios
-from submodmax.algorithms import greedy_with_information_sharing_rule
+from submodmax.algorithms import *
 from submodmax.information_sharing_rules import *
 from submodmax.scenario_builders import *
 
@@ -7,8 +7,10 @@ sc = algorithms_versus_scenarios(
     scenario_builders=[generate_line_graph, generate_random_linearized_dag],
     scenario_builder_params=[[7, 10], [7, 10, 7]],
     scenario_type_titles=["Line Graph", "Random Linearized DAG"],
-    algorithms=[greedy_with_information_sharing_rule for _ in range(10)],
+    algorithms=[distributed_greedy] + [greedy_with_information_sharing_rule for _ in range(11)],
     algorithm_params=[
+        [],
+        [generalized_distributed_greedy_rule],
         [highest_marginal_contribution_rule],
         [maximize_downstream_reach],
         [reach_and_value_rule],
@@ -21,6 +23,8 @@ sc = algorithms_versus_scenarios(
         [closeness_centrality_rule]
     ],
     algorithm_titles=[
+        "Distributed Greedy",
+        "Generalized Distributed Greedy",
         "Highest Marginal Contribution",
         "Maximize Downstream Reach",
         "Reach and Value",

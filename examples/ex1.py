@@ -24,7 +24,7 @@ action_sets = {
     4: [3, 4, 5]
 }
 
-scenario = Scenario(G, action_sets, target_values, type="figure1")
+scenario = Scenario(G, action_sets, target_values)
 
 dist_greedy = distributed_greedy(scenario)
 gen_dist_greedy = greedy_with_information_sharing_rule(scenario, generalized_distributed_greedy_rule)
