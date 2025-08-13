@@ -1,5 +1,6 @@
 # PROJECT SPECIFIC
 out/
+archive/
 
 # Other
 .DS_Store

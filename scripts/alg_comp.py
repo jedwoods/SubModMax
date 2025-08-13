@@ -3,6 +3,8 @@ from submodmax.algorithms import *
 from submodmax.information_sharing_rules import *
 from submodmax.scenario_builders import *
 
+# Compares performance of different information sharing strategies on different graph types.
+
 sc = algorithms_versus_scenarios(
     scenario_builders=[generate_line_graph, generate_random_linearized_dag],
     scenario_builder_params=[[7, 10], [7, 10, 7]],
