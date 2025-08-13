@@ -1,3 +1,7 @@
+### IMPORTANT NOTE:
+Most of the content in this repository is just personal exploration of simple submodular functions and greedy algorithms for maximizing them.
+The more interesting content is contained in the RISB (Restricted Information Sharing Bounds) folder, where I explore worst case scenario submodular function designs given certain information sharing graphs.
+
 ### Installation
 After cloning, use `pip install -e .` to install in editable mode. Scripts can then be called as expected (for example: `python3 examples/ex1.py`).
 
