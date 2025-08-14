@@ -28,8 +28,8 @@ def logprint(*args, to_log=True, to_terminal=True, **kwargs):
 # -----------------------
 # Graph utilities
 # -----------------------
-def generate_all_graphs_of_size_n(n):
-    """Generate all directed graphs on n nodes."""
+def generate_all_graphs_of_size_n(n: int):
+    """Generate all directed graphs $G \in \mathcal{G}$ containing n nodes."""
     edges = [(i, j) for i in range(1, n + 1) for j in range(i + 1, n + 1)]
     all_subsets = [list(subset) for r in range(1, len(edges) + 1) for subset in combinations(edges, r)]
     results = []
@@ -40,10 +40,10 @@ def generate_all_graphs_of_size_n(n):
         results.append(G)
     return results
 
-def compute_info_sets_all_choices(G):
+def compute_info_sets_all_choices(G: nx.DiGraph):
     """
-    Deterministic computation of knowledge sets for each agent.
-    Uses tuple-based placeholders instead of fragile string parsing.
+    Computes the possible knowledge sets receivable through information sharing by each agent
+    in G.
     """
     G = G.copy()
     topo_order = list(nx.topological_sort(G))
@@ -95,7 +95,7 @@ def compute_info_sets_all_choices(G):
 # -----------------------
 # LP solver
 # -----------------------
-def build_and_solve_lp(G: nx.DiGraph, pruned=False, info_sets=None):
+def build_and_solve_lp(G: nx.DiGraph, pruned: bool = False, info_sets=None):
     logprint(f"START TIME: {datetime.now().strftime('%m-%d-%Y %I:%M:%S %p')}")
     G = G.copy()
     mode_str = "PRUNED" if pruned else "FULL"
@@ -244,11 +244,11 @@ def build_and_solve_lp(G: nx.DiGraph, pruned=False, info_sets=None):
 # -----------------------
 # Batch solver utilities
 # -----------------------
-def write_summary_table(headers, rows, path):
+def write_summary_table(headers: list, rows: list, path: str):
     with open(path, "w", encoding="utf-8") as f:
         print(tabulate(rows, headers=headers, tablefmt="simple"), file=f)
 
-def solve_lp_cases(graph_set, mode, output_dir):
+def solve_lp_cases(graph_set: list[nx.DiGraph], mode: str, output_dir: str):
     """Solve LPs for a set of graphs. mode: 'full', 'pruned', or 'both'."""
     os.makedirs(output_dir, exist_ok=True)
     total_cases = len(graph_set)
